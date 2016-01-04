@@ -6,7 +6,7 @@ class NewVisitorTest(unittest.TestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
         # if anything every go wrong, after 3s, go ahead and fail right away
-        self.browser.implicitely_wait(3)
+        self.browser.implicitly_wait(3)
     # after every test, shut down
     def tearDown(self):
         self.browser.quit()
@@ -38,6 +38,7 @@ class NewVisitorTest(unittest.TestCase):
         # She visits that URL - her to-do list is still there.
 
         # Satisfied, she goes back to sleep.
+        self.fail('Finish the app!')
 
 # main method
 if __name__ == '__main__':
