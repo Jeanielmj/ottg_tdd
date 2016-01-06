@@ -17,6 +17,12 @@ class NewVisitorTest(unittest.TestCase):
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
 
+    def enter_a_new_item(self, todo_text):
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys(todo_text)
+        inputbox.send_keys(Keys.ENTER)
+
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith has heard about a cool new online to-do app. She goes
         # to check out its homepage
@@ -36,19 +42,16 @@ class NewVisitorTest(unittest.TestCase):
 
         # She types "Buy peacock feather" into a text box
         # (Edith's hobby is tying fly-fishing lures)
-        inputbox.send_keys('Buy peacock feathers')
+        self.enter_a_new_item('Buy peacock feathers')
 
         # When she hits enter, the page updates, and now the paske lists
         # "1. Buy peacock feathers" as an item in a to-do lists
-        inputbox.send_keys(Keys.ENTER)
         self.check_for_row_in_list_table('1: Buy peacock feathers')
 
         # There is still a text box inviting her to add another item.
         # She enters 'Use peacock feathers to make fly'
         # (Edith is very methodolical)
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        inputbox.send_keys('Use peacock feathers to make fly')
-        inputbox.send_keys(Keys.ENTER)
+        self.enter_a_new_item('Use peacock feathers to make fly')
 
         # The page updates again, and now shows both items on her list
         self.check_for_row_in_list_table('1: Buy peacock feathers')
