@@ -46,16 +46,16 @@ class NewVisitorTest(unittest.TestCase):
 
         # When she hits enter, the page updates, and now the paske lists
         # "1. Buy peacock feathers" as an item in a to-do lists
-        self.check_for_row_in_list_table('1: Buy peacock feathers')
+        self.check_for_row_in_list_table('1. Buy peacock feathers')
 
         # There is still a text box inviting her to add another item.
         # She enters 'Use peacock feathers to make fly'
         # (Edith is very methodolical)
-        self.enter_a_new_item('Use peacock feathers to make fly')
+        self.enter_a_new_item('Use peacock feathers to make a fly')
 
         # The page updates again, and now shows both items on her list
-        self.check_for_row_in_list_table('1: Buy peacock feathers')
-        self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
+        self.check_for_row_in_list_table('1. Buy peacock feathers')
+        self.check_for_row_in_list_table('2. Use peacock feathers to make a fly')
 
         # Edith wonders whether the site will remember her list. Then she sees
         # that the site jas generated a unique URL for her -- there is some
