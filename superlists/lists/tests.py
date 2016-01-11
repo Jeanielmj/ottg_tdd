@@ -75,10 +75,6 @@ class NewItemTest(TestCase):
 
         self.assertRedirects(response, '/lists/%d/' % (correct_list.id,))
 
-
-
-
-
 #Test for the model only
 class ListAndItemModelsTest(TestCase):
 
