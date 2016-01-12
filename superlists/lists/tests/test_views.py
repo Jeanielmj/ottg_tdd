@@ -5,7 +5,6 @@ from django.http import HttpRequest
 from lists.models import Item, List
 from lists.views import home_page
 
-# Test for homepage
 class HomePageTest(TestCase):
     def test_root_url_resolve_to_home_page_view(self):
         found = resolve('/')
@@ -17,12 +16,11 @@ class HomePageTest(TestCase):
         expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
 
-    def test_home_page_doesnt_save_on_GET_request(self):
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Item.objects.count(), 0)
+    # def test_home_page_doesnt_save_on_GET_request(self):
+    #     request = HttpRequest()
+    #     home_page(request)
+    #     self.assertEqual(Item.objects.count(), 0)
 
-#Test for list only
 class ListViewTest(TestCase):
 
     def test_uses_list_template(self):
@@ -75,37 +73,6 @@ class NewItemTest(TestCase):
 
         self.assertRedirects(response, '/lists/%d/' % (correct_list.id,))
 
-#Test for the model only
-class ListAndItemModelsTest(TestCase):
-
-    def test_saving_and_retrieving_items(self):
-        new_list = List()
-        new_list.save()
-
-        first_item = Item()
-        first_item.text = 'The first (ever) list item'
-        first_item.list = new_list
-        first_item.save()
-
-        second_item = Item()
-        second_item.text = 'Item the second'
-        second_item.list = new_list
-        second_item.save()
-
-        saved_list = List.objects.first()
-        self.assertEqual(new_list, saved_list)
-
-        saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(), 2)
-
-        first_saved_item = saved_items[0]
-        second_saved_item = saved_items[1]
-        self.assertEqual(first_saved_item.text, 'The first (ever) list item')
-        self.assertEqual(first_saved_item.list, new_list)
-
-        self.assertEqual(second_saved_item.text, 'Item the second')
-        self.assertEqual(second_saved_item.list, new_list)
-
 class NewListTest(TestCase):
     def test_save_a_POST_request(self):
         self.client.post(
@@ -113,15 +80,9 @@ class NewListTest(TestCase):
             data={'item_text': 'A new list item'}
         )
 
-        #request = HttpRequest()
-        #request.method = 'POST'
-        #request.POST['item_text'] = 'A new list item'
-        #response = home_page(request)
-
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
-
 
     def test_redirects_after_POST(self):
         response = self.client.post(
@@ -129,13 +90,5 @@ class NewListTest(TestCase):
             data={'item_text': 'A new list item'}
         )
 
-        #request = HttpRequest()
-        #request.method = 'POST'
-        #request.POST['item_text'] = 'A new list item'
-        #response = home_page(request)
-
         new_list = List.objects.first()
         self.assertRedirects(response, '/lists/%d/' % (new_list.id,))
-
-        # self.assertEqual(response.status_code, 302)
-        # self.assertEqual(response['location'], '/lists/the-only-list/')
