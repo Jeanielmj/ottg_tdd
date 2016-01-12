@@ -6,7 +6,6 @@ def home_page(request):
     # if request.method == 'POST':
     #     Item.objects.create(text=request.POST['item_text'])
     #     return redirect('/lists/the-only-list/')
-
     return render(request, 'home.html')
 
 def new_list(request):
@@ -25,4 +24,9 @@ def view_list(request, list_id):
 def add_item(request, list_id):
     list_ = List.objects.get(id=list_id)
     Item.objects.create(text=request.POST['item_text'], list= list_)
+    return redirect('/lists/%d/' % (list_.id,))
+
+def delete_item(request, list_id):
+    list_ = List.objects.get(id=list_id)
+    Item.objects.create(text=request.get['item_text'], list= list_)
     return redirect('/lists/%d/' % (list_.id,))
