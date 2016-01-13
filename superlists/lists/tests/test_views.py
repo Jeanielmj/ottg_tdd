@@ -92,6 +92,18 @@ class ListViewTest(TestCase):
         self.client.get('/lists/%d/%d/delete_item' % (new_list.id, item_2.id))
         self.assertEqual(Item.objects.count(), 0)
 
+    def test_list_view_displays_checkbox(self):
+        current_list = List.objects.create()
+        Item.objects.create(text='item 1', list= current_list)
+        Item.objects.create(text='item 2', list= current_list)
+
+        response = self.client.get('/lists/%d/' % (current_list.id,))
+
+        self.assertContains(response, 'input type="checkbox"')
+
+    def test_POST_items_toggles_done(self):
+        pass
+
 class NewListTest(TestCase):
     def test_save_a_POST_request(self):
         self.client.post(
