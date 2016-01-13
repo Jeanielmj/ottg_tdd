@@ -4,7 +4,6 @@ from lists import views
 urlpatterns = [
 
     url(r'^new$', views.new_list, name='new_list'),
-    #url(r'^(\d+)/add_item$', views.add_item, name='add_item'),
     url(r'^(\d+)/$', views.view_list, name='view_list'),
-    #url(r'^items/(\d+)/delete', views.delete_item, name='delete_item'),
+    url(r'^(\d+)/(\d+)/delete_item$', views.delete_item, name='delete_item'),
 ]

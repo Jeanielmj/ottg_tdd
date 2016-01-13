@@ -38,3 +38,9 @@ def view_list(request, list_id):
         request, 'list.html',
         { 'list': list_, 'error': error }
         )
+
+def delete_item(request, list_id, item_id):
+    list_ = List.objects.get(id=list_id)
+    item_ = Item.objects.get(id=item_id)
+    item_.delete()
+    return redirect('/lists/%d/' % (list_.id))

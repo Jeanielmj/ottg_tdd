@@ -81,6 +81,17 @@ class ListViewTest(TestCase):
         )
         self.assertEqual(Item.objects.count(), 0)
 
+    def test_can_delete_item(self):
+        new_list = List.objects.create()
+        item_1 = Item.objects.create(text='itemey 1', list= new_list)
+        item_2 = Item.objects.create(text='itemey 2', list= new_list)
+
+        self.client.get('/lists/%d/%d/delete_item' % (new_list.id, item_1.id))
+        self.assertEqual(Item.objects.count(), 1)
+
+        self.client.get('/lists/%d/%d/delete_item' % (new_list.id, item_2.id))
+        self.assertEqual(Item.objects.count(), 0)
+
 class NewListTest(TestCase):
     def test_save_a_POST_request(self):
         self.client.post(
