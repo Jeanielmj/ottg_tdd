@@ -1,4 +1,5 @@
 from .base import ToDoFunctionalTest
+from selenium import webdriver
 
 class ToggleDoneTest(ToDoFunctionalTest):
     def toggle_todo_done(self, todo_text):
