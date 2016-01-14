@@ -71,7 +71,7 @@ class ListViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'list.html')
         expected_error = escape("You can't have an empty list item")
-        self.assertContains
+        self.assertContains(response, expected_error )
 
     def test_invalid_items_arent_saved(self):
         current_list = List.objects.create()
@@ -101,7 +101,7 @@ class ListViewTest(TestCase):
 
         self.assertContains(response, 'input type="checkbox"')
 
-    def test_POST_items_toggles_done(self):
+    def test_POST_items_marked_done(self):
         # Create list and items
         current_list = List.objects.create()
         item_1 = Item.objects.create(text='item 1', list= current_list)
@@ -120,6 +120,65 @@ class ListViewTest(TestCase):
         # Check item is update
         self.assertTrue(item_1.is_done)
         self.assertFalse(item_2.is_done)
+
+    def test_POST_multiple_items_done(self):
+        current_list = List.objects.create()
+        item_1 = Item.objects.create(text='item 1', list= current_list)
+        item_2 = Item.objects.create(text='item 2', list= current_list)
+
+        response = self.client.post(
+            '/lists/%d/items/' % (current_list.id,),
+            data = {'mark_item_done': [item_1.id, item_2.id]}
+        )
+
+        item_1 = Item.objects.get(id=item_1.id)
+        item_2 = Item.objects.get(id=item_2.id)
+        self.assertTrue(item_1.is_done)
+        self.assertTrue(item_2.is_done)
+
+    def test_POST_zero_items_done(self):
+        current_list = List.objects.create()
+        item_1 = Item.objects.create(text='item 1', list= current_list)
+        item_2 = Item.objects.create(text='item 2', list= current_list)
+
+        response = self.client.post(
+            '/lists/%d/items/' % (current_list.id,),
+            data = { }
+        )
+
+        item_1 = Item.objects.get(id=item_1.id)
+        item_2 = Item.objects.get(id=item_2.id)
+        self.assertFalse(item_1.is_done)
+        self.assertFalse(item_2.is_done)
+
+    def test_POST_items_toggles_done(self):
+        # Create list and items
+        current_list = List.objects.create()
+        item_1 = Item.objects.create(
+            text='item 1',
+            list= current_list,
+            is_done = True
+            )
+
+        item_2 = Item.objects.create(
+            text='item 2',
+            list= current_list,
+            is_done = False
+            )
+
+        # POST done
+        response = self.client.post(
+            '/lists/%d/items/' % (current_list.id,),
+            data = {'mark_item_done': item_2.id
+            }
+        )
+
+        self.assertRedirects(response, '/lists/%d/' % (current_list.id,))
+
+        item_1 = Item.objects.get(id=item_1.id)
+        item_2 = Item.objects.get(id=item_2.id)
+        self.assertFalse(item_1.is_done)
+        self.assertTrue(item_2.is_done)
 
 class NewListTest(TestCase):
     def test_save_a_POST_request(self):

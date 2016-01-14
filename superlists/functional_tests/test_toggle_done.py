@@ -3,9 +3,10 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 class ToggleDoneTest(ToDoFunctionalTest):
-    def toggle_todo_done(self, todo_text):
-        row = self.find_table_row(todo_text)
-        row.find_element_by_tag_name('input').click()
+    def toggle_todo_done(self, todo_text_list):
+        for todo_text in todo_text_list:
+            row = self.find_table_row(todo_text)
+            row.find_element_by_tag_name('input').click()
         self.browser.find_element_by_id('toggle_done').click()
 
     def check_marked_off(self, todo_text):
@@ -13,9 +14,16 @@ class ToggleDoneTest(ToDoFunctionalTest):
         try:
             row.find_element_by_css_selector('.todo-done')
         except NoSuchElementException:
-            self.fail("%s not marked done!" % (todo_text))
+            self.fail("'%s' not marked done!" % (todo_text))
 
-    def test_can_toggle_finished_items(self):
+    def check_not_marked_off(self, todo_text):
+        try:
+            self.check_marked_off(todo_text)
+        except:
+            return
+        self.fail("'%s' is marked done!" % (todo_text))
+
+    def test_can_mark_finished_items(self):
         self.browser.get(self.live_server_url)
         # Edith makes a quick shopping list,
         # noticing a checkbox to toggle done items.
@@ -28,8 +36,10 @@ class ToggleDoneTest(ToDoFunctionalTest):
 
         # At the store, Edith puts the feathers in her cart,
         # and marks them down on the todo list
-        self.toggle_todo_done('Buy peacock feathers')
-        self.toggle_todo_done('Buy fishing line')
+        self.toggle_todo_done([
+            'Buy peacock feathers',
+            'Buy fishing line'
+            ])
 
         # Edith returns home, re-opens her todo List
         # and see that her shopping list is still marked
@@ -46,5 +56,39 @@ class ToggleDoneTest(ToDoFunctionalTest):
         self.enter_a_new_item('Tie some flys')
         self.check_marked_off('Buy peacock feathers')
         self.check_marked_off('Buy fishing line')
-        self.toggle_todo_done('Tie some flys')
+
+        self.toggle_todo_done(['Tie some flys'])
         self.check_marked_off('Tie some flys')
+
+    def test_can_toggle_finished_items(self):
+        # Edith's ties flying hobby is booming, and she wants
+        # a list that she can use over and over.
+
+        self.browser.get(self.live_server_url)
+        self.enter_a_new_item("Buy peacock feathers")
+        self.enter_a_new_item("Buy fishing line")
+        self.enter_a_new_item("Buy sparkles")
+
+        # She looks in her closet, and already has fishing line.
+        self.toggle_todo_done(['Buy fishing line'])
+        self.check_marked_off('Buy fishing line')
+
+        # She goes to the store, and finishes shopping
+        self.toggle_todo_done([
+            'Buy peacock feathers',
+            'Buy sparkles'
+        ])
+
+        self.check_marked_off("Buy peacock feathers")
+        # self.check_marked_off("Buy fishing line")
+        self.check_marked_off("Buy sparkles")
+
+        self.toggle_todo_done([
+            'Buy peacock feathers',
+            'Buy fishing line',
+            'Buy sparkles'
+        ])
+
+        self.check_not_marked_off("Buy peacock feathers")
+        self.check_not_marked_off("Buy fishing line")
+        self.check_not_marked_off("Buy sparkles")
