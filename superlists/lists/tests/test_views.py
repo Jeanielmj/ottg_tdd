@@ -17,6 +17,17 @@ class HomePageTest(TestCase):
         expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
 
+    def test_home_page_has_to_do_lists(self):
+        list_1 = List.objects.create(name="List 1")
+        list_2 = List.objects.create(name="List 2")
+        response = self.client.get('/')
+
+        context = response.context['todo_lists']
+        self.assertEqual(len(context), 2)
+        self.assertEqual(context[0], list_1)
+        self.assertEqual(context[1], list_2)
+
+
     # def test_home_page_doesnt_save_on_GET_request(self):
     #     request = HttpRequest()
     #     home_page(request)
@@ -101,6 +112,16 @@ class ListViewTest(TestCase):
 
         self.assertContains(response, 'input type="checkbox"')
 
+    def test_edit_list_name(self):
+        current_list = List.objects.create()
+        self.client.post(
+            '/lists/%d/' % (current_list.id,),
+            data = {'list_name': 'New List'}
+            )
+        self.assertEqual(List.objects.first().name,'New List')
+
+
+class EditListTest(TestCase):
     def test_POST_items_marked_done(self):
         # Create list and items
         current_list = List.objects.create()
