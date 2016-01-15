@@ -219,4 +219,4 @@ class NewListTest(TestCase):
             })
 
         new_list = List.objects.first()
-        self.assertEqual(new_list.name, 'A new list item') 
+        self.assertEqual(new_list.name, 'A new list item')
