@@ -2,7 +2,9 @@ from .base import ToDoFunctionalTest
 
 class ManyListsTest(ToDoFunctionalTest):
     def change_list_name(self, list_name):
-        pass
+        inputbox = self.browser.find_element_by_id('id_rename_list')
+        inputbox.clear()
+        inputbox.send_keys(list_name + '\n')
 
     def test_can_create_and_view_multiple_lists(self):
         self.browser.get(self.live_server_url)
@@ -20,11 +22,16 @@ class ManyListsTest(ToDoFunctionalTest):
         self.browser.get(self.live_server_url)
         self.check_for_row_in_list_table('Groceries')
 
+        import time
+        time.sleep(15)
         # Edith creates a new list for her Art History homework
         self.enter_a_new_item('Read Camille')
 
+        time.sleep(10)
         # Edith opens the home page later & sees both lists
         self.browser.get(self.live_server_url)
+
+        time.sleep(10)
         self.check_for_row_in_list_table('Groceries')
         self.check_for_row_in_list_table('Read Camille')
 

@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 
-{% block header_text %}Your To-Do list {% endblock %}
+{% block header_text %}To-Do
+<form method='POST' action="/lists/{{list.id}}/">
+  <input id="id_rename_list" name="list_name" value="{{list.id}}" class="form-control input-lg" placeholder="List name"/>
+  {% csrf_token %}
+</form>
+{% endblock %}
 {% block form_action %}/lists/{{list.id}}/{% endblock %}
 
 {% block table %}
