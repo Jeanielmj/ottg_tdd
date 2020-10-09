@@ -1,6 +1,0 @@
-ssh-add -D
-ssh-add ~/.ssh/id_rsa
-
-git config user.email "jeanielmj@gmail.com"
-git config user.name "jeanielmj"
-
